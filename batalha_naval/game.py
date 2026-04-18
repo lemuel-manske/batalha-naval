@@ -61,5 +61,26 @@ def attack(
     if cell is None:
         return {**state, "attacks": new_attacks, "current_turn": next_turn}, "miss"
 
-    # hit/sunk: placeholder — será implementado em seguida
-    return {**state, "attacks": new_attacks, "current_turn": next_turn}, "miss"
+    ship_name: ShipName = cell
+    remaining: ShipCells = state["ships"][opponent][ship_name] - {coord}
+
+    if remaining:
+        new_ships = {
+            **state["ships"],
+            opponent: {**state["ships"][opponent], ship_name: remaining},
+        }
+        return (
+            {**state, "attacks": new_attacks, "ships": new_ships, "current_turn": next_turn},
+            "hit",
+        )
+
+    # navio sem células restantes — remove do mapa
+    new_opponent_ships = {
+        k: v for k, v in state["ships"][opponent].items() if k != ship_name
+    }
+    new_ships = {**state["ships"], opponent: new_opponent_ships}
+
+    return (
+        {**state, "attacks": new_attacks, "ships": new_ships, "current_turn": next_turn},
+        "sunk",
+    )

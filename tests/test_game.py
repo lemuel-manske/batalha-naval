@@ -71,3 +71,28 @@ def test_attack_miss_switches_turn():
     state = _game_with_known_boards()
     new_state, _ = attack(state, "player1", (0, 0))
     assert new_state["current_turn"] == "player2"
+
+
+def test_attack_hit_returns_hit():
+    state = _game_with_known_boards()
+    # destroyer do player2 está em (5,5) e (5,6)
+    new_state, result = attack(state, "player1", (5, 5))
+    assert result == "hit"
+
+
+def test_attack_sunk_returns_sunk():
+    state = _game_with_known_boards()
+    state, _ = attack(state, "player1", (5, 5))
+    # troca de turno — player2 ataca célula vazia
+    state, _ = attack(state, "player2", (9, 9))
+    # player1 afunda o destroyer
+    state, result = attack(state, "player1", (5, 6))
+    assert result == "sunk"
+
+
+def test_attack_sunk_removes_ship_from_state():
+    state = _game_with_known_boards()
+    state, _ = attack(state, "player1", (5, 5))
+    state, _ = attack(state, "player2", (9, 9))
+    state, _ = attack(state, "player1", (5, 6))
+    assert "destroyer" not in state["ships"]["player2"]
