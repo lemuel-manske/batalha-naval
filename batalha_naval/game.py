@@ -54,15 +54,16 @@ def attack(
 
     new_attacks = {
         **state["attacks"],
-        attacker: state["attacks"][attacker] | {coord},
+        attacker: state["attacks"][attacker] | frozenset({coord}),
     }
+    # o turno sempre passa para o oponente, independente do resultado
     next_turn: Player = opponent
 
     if cell is None:
         return {**state, "attacks": new_attacks, "current_turn": next_turn}, "miss"
 
     ship_name: ShipName = cell
-    remaining: ShipCells = state["ships"][opponent][ship_name] - {coord}
+    remaining: ShipCells = state["ships"][opponent][ship_name] - frozenset({coord})
 
     if remaining:
         new_ships = {
