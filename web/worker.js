@@ -26,7 +26,7 @@ sys.path.insert(0, "/")
   pyodide.runPython(`
 from batalha_naval.board import empty_board, random_placement, SHIPS, validate_placement, place_ship, BOARD_SIZE
 from batalha_naval.game import new_game, attack as _attack, is_game_over, get_winner, is_valid_attack
-from batalha_naval.strategy import mcts_strategy, random_strategy
+from batalha_naval.strategy import smart_strategy, random_strategy
 from batalha_naval.loop import run_game
 import json as _json
 `);
@@ -203,7 +203,7 @@ function handleAiTurn() {
   const alreadyOver = pyodide.runPython(`is_game_over(_state)`);
   if (alreadyOver) return;
   pyodide.runPython(`
-_coord = mcts_strategy(_state, _state["current_turn"])
+_coord = smart_strategy(_state, _state["current_turn"])
 _state, _result = _attack(_state, _state["current_turn"], _coord)
 if is_game_over(_state):
     _state = {**_state, "winner": get_winner(_state)}

@@ -38,6 +38,20 @@ A função `mcts_strategy` aceita um parâmetro `time_budget` (padrão `MCTS_TIM
 - Adaptar ao hardware disponível sem alterar a lógica do algoritmo
 - Usar budgets pequenos em testes para manter a suite rápida
 
+## Por que substituir o MCTS por `smart_strategy`
+
+O `mcts_strategy` tinha um defeito fundamental: usava `random_strategy` nas simulações internas. Isso tornava o algoritmo equivalente a um heatmap Monte Carlo puro — ele estimava a densidade de navios por célula, mas **ignorava completamente os hits já registrados**. Após acertar um navio, a IA continuava atirando aleatoriamente em vez de focar nas células adjacentes para afundá-lo.
+
+A `smart_strategy` corrige isso com dois modos de operação:
+
+**Modo alvo (target mode):** ativado quando há hits em navios ainda não afundados. A função identifica as células quentes (`_get_hot_cells`) e calcula os candidatos de ataque (`_target_candidates`): se os hits estão alinhados em uma linha ou coluna, retorna apenas os endpoints do segmento; se há um único hit isolado, retorna os quatro vizinhos. Esse modo garante que a IA afunde o navio antes de mudar de alvo.
+
+**Modo caça (hunt mode):** ativado quando não há hits pendentes. Filtra as células candidatas pelo critério de paridade (`_parity_candidates`): só inclui células onde o menor navio ainda vivo cabe horizontalmente ou verticalmente sem passar por uma célula já atacada e errada. Isso reduz o espaço de busca em ~50% comparado ao tiro aleatório.
+
+Em ambos os modos, quando há mais de um candidato, a decisão final usa amostragem Monte Carlo (`N_SAMPLES = 200` amostras via `sample_opponent_board`) para estimar a densidade de navios por célula, com tie-break por distância Manhattan ao centro do tabuleiro (4.5, 4.5).
+
+O ganho prático do target mode é muito maior que o do heatmap: focar nos adjacentes após um hit é o que separa um jogador competente de um aleatório. O hunt mode com paridade reduz turnos desperdiçados em células onde nenhum navio pode estar.
+
 ## Extensibilidade para outros algoritmos
 
 A interface de estratégia é definida como um callable puro:
