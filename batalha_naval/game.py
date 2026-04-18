@@ -81,7 +81,7 @@ def attack(
             "hit",
         )
 
-    # navio sem células restantes — remove do mapa
+    # navio sem células restantes, entao remove do mapa
     new_opponent_ships = {
         k: v for k, v in state["ships"][opponent].items() if k != ship_name
     }

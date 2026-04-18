@@ -21,7 +21,7 @@ SHIPS: dict[ShipName, int] = {
     "destroyer": 2,
 }
 
-BOARD_SIZE = 10
+BOARD_SIZE = 10  # pode ser configurável, mas 10x10 é o padrão clássico
 
 
 def empty_board() -> Board:
