@@ -1,10 +1,15 @@
-from batalha_naval.board import random_placement, SHIPS, empty_board, place_ship
+from batalha_naval.board import (
+    SHIPS,
+    empty_board,
+    place_ship,
+    random_placement,
+)
 from batalha_naval.game import (
-    new_game,
     attack,
-    is_game_over,
     get_winner,
+    is_game_over,
     is_valid_attack,
+    new_game,
 )
 
 

@@ -8,7 +8,7 @@ type Row = tuple[Cell, ...]
 type Board = tuple[Row, ...]
 
 type Coord = tuple[int, int]
-type Direction = Literal["h", "v"]
+type Direction = Literal["h", "v"]  # horizontal ou vertical
 
 type ShipName = str
 

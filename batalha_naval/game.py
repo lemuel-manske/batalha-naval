@@ -13,6 +13,10 @@ type GameState = dict
 type AttackResult = Literal["miss", "hit", "sunk"]
 
 
+def opponent(player: Player) -> Player:
+    return "player2" if player == "player1" else "player1"
+
+
 def _extract_ships(board: Board) -> ShipMap:
     ships: dict[ShipName, set[Coord]] = {}
 
@@ -81,7 +85,7 @@ def attack(
             "hit",
         )
 
-    # navio sem células restantes, entao remove do mapa
+    # navio sem células restantes, então remove do mapa
     new_opponent_ships = {
         k: v for k, v in state["ships"][opponent].items() if k != ship_name
     }

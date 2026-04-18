@@ -1,11 +1,12 @@
 import random
+import time
 
 from typing import Callable, Literal
 
 from batalha_naval.board import (
+    BOARD_SIZE,
     Board,
     Coord,
-    BOARD_SIZE,
     SHIPS,
     empty_board,
     place_ship,
@@ -14,8 +15,7 @@ from batalha_naval.board import (
 from batalha_naval.game import (
     GameState,
     Player,
-    new_game as _new_game,
-    attack as _attack,
+    attack,
     get_winner,
 )
 
@@ -67,7 +67,8 @@ def sample_opponent_board(state: GameState, attacker: Player) -> Board:
         and opponent_board[coord[0]][coord[1]] not in sunk_ships
     )
 
-    # posiciona aleatoriamente os navios ainda vivos, respeitando misses e hits conhecidos
+    # posiciona aleatoriamente os navios ainda vivos
+    # respeitando misses e hits conhecidos
     for ship_name in state["ships"][opponent]:
         placed = False
 
@@ -89,7 +90,8 @@ def sample_opponent_board(state: GameState, attacker: Player) -> Board:
             if any(cell in known_misses for cell in cells):
                 continue
 
-            # hits conhecidos deste navio devem estar cobertos pela posição sorteada
+            # hits conhecidos deste navio devem estar cobertos
+            # pela posição sorteada
             ship_hits = {
                 coord
                 for coord in known_hits
@@ -104,7 +106,7 @@ def sample_opponent_board(state: GameState, attacker: Player) -> Board:
     return board
 
 
-MCTS_SIMULATIONS = 200
+MCTS_TIME_BUDGET = 0.4
 
 
 def _extract_ships_from_board(board: Board) -> dict[str, frozenset[Coord]]:
@@ -119,10 +121,13 @@ def _extract_ships_from_board(board: Board) -> dict[str, frozenset[Coord]]:
     return {name: frozenset(cells) for name, cells in ships.items()}
 
 
-def mcts_strategy(state: GameState, player: Player) -> Coord:
-    from batalha_naval.loop import run_game
+def mcts_strategy(
+    state: GameState, player: Player, time_budget: float = MCTS_TIME_BUDGET
+) -> Coord:
+    from batalha_naval.game import opponent as get_opponent
 
-    opponent: Player = "player2" if player == "player1" else "player1"
+    opp: Player = get_opponent(player)
+
     attacked = state["attacks"][player]
 
     candidates = [
@@ -134,28 +139,33 @@ def mcts_strategy(state: GameState, player: Player) -> Coord:
 
     simulated_wins: dict[Coord, int] = {coord: 0 for coord in candidates}
 
+    p1: Player = "player1"
+    p2: Player = "player2"
     strategies: dict[Player, Strategy] = {
-        "player1": random_strategy,
-        "player2": random_strategy,
+        p1: random_strategy,
+        p2: random_strategy,
     }
 
-    # cada iteração amostra um tabuleiro e avalia todos os candidatos contra ele
-    # isso compara os candidatos nas mesmas condições por amostra, produzindo estimativas
-    # mais estáveis do que avaliar cada candidato em amostras independentes
-    for _ in range(MCTS_SIMULATIONS):
+    from batalha_naval.loop import run_game
+
+    # MCTS é um anytime algorithm: quanto mais tempo, melhor a estimativa.
+    # o loop roda simulações até o budget expirar e retorna o melhor resultado
+    # parcial — equivalente ao iterative deepening de Russell & Norvig cap. 5.
+    deadline = time.monotonic() + time_budget
+    while time.monotonic() < deadline:
         sampled_board = sample_opponent_board(state, player)
 
         simulated_state = {
             **state,
-            "boards": {**state["boards"], opponent: sampled_board},
+            "boards": {**state["boards"], opp: sampled_board},
             "ships": {
                 **state["ships"],
-                opponent: _extract_ships_from_board(sampled_board),
+                opp: _extract_ships_from_board(sampled_board),
             },
         }
 
         for coord in candidates:
-            sim, _ = _attack(simulated_state, player, coord)
+            sim, _ = attack(simulated_state, player, coord)
             final = run_game(sim, strategies)
 
             if get_winner(final) == player:

@@ -20,6 +20,18 @@ O Monte Carlo Tree Search lida naturalmente com informação imperfeita:
 
 Em vez de explorar uma árvore exata, o MCTS aproxima a decisão ótima via amostragem e melhora quanto mais tempo tiver para executar.
 
+## Budget de tempo em vez de número fixo de simulações
+
+O MCTS é um **anytime algorithm**: pode ser interrompido a qualquer momento e retorna o melhor resultado parcial disponível. Isso é análogo ao iterative deepening descrito por Russell & Norvig (cap. 5) para Minimax — a diferença é que no Minimax cada profundidade precisa ser completada antes de retornar um resultado válido, enquanto no MCTS cada simulação já melhora incrementalmente as estimativas.
+
+Por isso, o critério de parada natural para MCTS é tempo, não número de simulações. Mais tempo resulta em mais simulações e estimativas estatisticamente mais precisas, o que se traduz diretamente em mais vitórias.
+
+A função `mcts_strategy` aceita um parâmetro `time_budget` (padrão `MCTS_TIME_BUDGET = 0.4` segundos). Isso permite:
+
+- Ajustar a dificuldade da IA mudando apenas o budget
+- Adaptar ao hardware disponível sem alterar a lógica do algoritmo
+- Usar budgets pequenos em testes para manter a suite rápida
+
 ## Extensibilidade para outros algoritmos
 
 A interface de estratégia é definida como um callable puro:

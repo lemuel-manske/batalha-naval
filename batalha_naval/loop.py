@@ -1,4 +1,10 @@
-from batalha_naval.game import GameState, Player, AttackResult, attack, is_game_over
+from batalha_naval.game import (
+    AttackResult,
+    GameState,
+    Player,
+    attack,
+    is_game_over,
+)
 from batalha_naval.strategy import Strategy
 
 type Strategies = dict[Player, Strategy]
