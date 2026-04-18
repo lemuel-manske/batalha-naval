@@ -9,3 +9,11 @@ lint:
 
 typecheck:
 	poetry run mypy batalha_naval
+
+setup-web:
+	ln -sf ../batalha_naval web/batalha_naval
+
+build-web:
+	rm -rf web/batalha_naval
+	mkdir -p web/batalha_naval
+	cp batalha_naval/*.py web/batalha_naval/

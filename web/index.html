@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Batalha Naval</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <h1>Batalha Naval</h1>
+        <div id="loading-indicator" class="hidden">Carregando IA...</div>
+      </header>
+
+      <div id="controls">
+        <div id="mode-toggle">
+          <button id="btn-hvai" class="toggle-btn active">Human vs IA</button>
+          <button id="btn-aivai" class="toggle-btn">IA vs IA</button>
+        </div>
+
+        <div id="action-btns">
+          <button id="btn-start" disabled>Iniciar jogo</button>
+          <button id="btn-cancel" class="hidden secondary">
+            Cancelar jogo
+          </button>
+          <button id="btn-restart" class="hidden">Nova partida</button>
+        </div>
+      </div>
+
+      <div id="game-status" class="hidden"></div>
+
+      <div id="end-banner" class="hidden">
+        <span id="end-message"></span>
+      </div>
+
+      <div id="placement-area" class="hidden">
+        <div id="placement-controls">
+          <button id="btn-rotate">↕ Rotacionar (R)</button>
+          <button id="btn-shuffle" class="secondary">Embaralhar</button>
+          <button id="btn-clear" class="secondary">Limpar</button>
+        </div>
+        <ul id="ship-list"></ul>
+      </div>
+
+      <div id="placement-area-aivai" class="hidden">
+        <div class="placement-side" id="placement-side-1">
+          <div class="placement-side-controls">
+            <button class="btn-rotate-side" data-player="player1">
+              ↕ Rotacionar (R)
+            </button>
+            <button class="btn-shuffle-side secondary" data-player="player1">
+              Embaralhar
+            </button>
+            <button class="btn-clear-side secondary" data-player="player1">
+              Limpar
+            </button>
+          </div>
+          <ul class="ship-list-side" id="ship-list-1"></ul>
+        </div>
+        <div class="placement-side" id="placement-side-2">
+          <div class="placement-side-controls">
+            <button class="btn-rotate-side" data-player="player2">
+              ↕ Rotacionar (R)
+            </button>
+            <button class="btn-shuffle-side secondary" data-player="player2">
+              Embaralhar
+            </button>
+            <button class="btn-clear-side secondary" data-player="player2">
+              Limpar
+            </button>
+          </div>
+          <ul class="ship-list-side" id="ship-list-2"></ul>
+        </div>
+      </div>
+
+      <div id="boards">
+        <div class="board-wrap">
+          <h3 id="label-player">Seu tabuleiro</h3>
+          <div id="board-player" class="board placeholder"></div>
+        </div>
+        <div class="board-wrap">
+          <h3 id="label-enemy">Tabuleiro inimigo</h3>
+          <div id="board-enemy" class="board placeholder"></div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

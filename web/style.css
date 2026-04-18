@@ -1,0 +1,415 @@
+:root {
+  --color-primary: #1565c0;
+  --color-primary-dark: #0d47a1;
+  --color-primary-light: #e3f0ff;
+  --color-primary-mid: #90caf9;
+  --color-bg: #f0f4f8;
+  --color-text: #1a2a3a;
+  --color-text-muted: #455a64;
+
+  --ship-carrier: #1565c0;
+  --ship-battleship: #0288d1;
+  --ship-cruiser: #00838f;
+  --ship-submarine: #558b2f;
+  --ship-destroyer: #f57f17;
+
+  --cell-size: 38px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 24px 16px 48px;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 920px;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: -0.5px;
+}
+
+#loading-indicator {
+  font-size: 0.85rem;
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+  border: 1px solid var(--color-primary-mid);
+  border-radius: 20px;
+  padding: 4px 14px;
+}
+
+#controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+#mode-toggle {
+  display: flex;
+  background: #dce8f8;
+  border-radius: 8px;
+  padding: 3px;
+  gap: 3px;
+}
+
+.toggle-btn {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-primary);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.toggle-btn.active {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.toggle-btn:not(.active):hover {
+  background: #b3d0f5;
+}
+
+#action-btns {
+  display: flex;
+  gap: 10px;
+}
+
+button {
+  padding: 9px 22px;
+  border: none;
+  border-radius: 7px;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    opacity 0.15s;
+}
+
+button:disabled {
+  background: #b0bec5;
+  cursor: not-allowed;
+}
+
+button:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+}
+
+button.secondary {
+  background: #fff;
+  color: var(--color-primary);
+  border: 1.5px solid var(--color-primary);
+}
+
+button.secondary:hover:not(:disabled) {
+  background: var(--color-primary-light);
+}
+
+#game-status {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+  border: 1px solid var(--color-primary-mid);
+  border-radius: 8px;
+  padding: 8px 24px;
+  min-width: 280px;
+  text-align: center;
+}
+
+#end-banner {
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 10px;
+  padding: 12px 36px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+#placement-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+#placement-controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+#ship-list {
+  list-style: none;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+#ship-list li {
+  padding: 5px 13px;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 5px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: grab;
+  user-select: none;
+  transition: opacity 0.15s;
+}
+
+#ship-list li[data-ship="carrier"] {
+  background: var(--ship-carrier);
+}
+#ship-list li[data-ship="battleship"] {
+  background: var(--ship-battleship);
+}
+#ship-list li[data-ship="cruiser"] {
+  background: var(--ship-cruiser);
+}
+#ship-list li[data-ship="submarine"] {
+  background: var(--ship-submarine);
+}
+#ship-list li[data-ship="destroyer"] {
+  background: var(--ship-destroyer);
+}
+
+#ship-list li:hover {
+  opacity: 0.85;
+}
+
+#ship-list li.dragging {
+  opacity: 0.5;
+  outline: 2px dashed var(--color-primary);
+  cursor: grabbing;
+}
+
+#ship-list li.placed {
+  background: #cfd8dc;
+  color: #78909c;
+  cursor: default;
+  text-decoration: line-through;
+}
+
+#boards {
+  display: flex;
+  gap: 48px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.board-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.board-wrap h3 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(10, var(--cell-size));
+  grid-template-rows: repeat(10, var(--cell-size));
+  gap: 2px;
+  border: 2px solid var(--color-primary-mid);
+  border-radius: 6px;
+  padding: 4px;
+  background: var(--color-primary-light);
+}
+
+.board.placeholder {
+  opacity: 0.45;
+}
+
+.cell {
+  width: var(--cell-size);
+  height: var(--cell-size);
+  background: #fff;
+  border: 1px solid #bbdefb;
+  border-radius: 3px;
+  transition: background 0.1s;
+}
+
+.cell.ship-carrier {
+  background: var(--ship-carrier);
+}
+.cell.ship-battleship {
+  background: var(--ship-battleship);
+}
+.cell.ship-cruiser {
+  background: var(--ship-cruiser);
+}
+.cell.ship-submarine {
+  background: var(--ship-submarine);
+}
+.cell.ship-destroyer {
+  background: var(--ship-destroyer);
+}
+.cell.ship {
+  background: var(--color-primary);
+}
+
+.cell.hit {
+  background: #e53935;
+  border-color: #b71c1c;
+}
+.cell.miss {
+  background: #eceff1;
+  border-color: #b0bec5;
+  position: relative;
+}
+.cell.miss::after {
+  content: "•";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #90a4ae;
+  font-size: 1.1rem;
+}
+
+.cell.preview-valid {
+  background: #a5d6a7;
+  border-color: #388e3c;
+}
+.cell.preview-invalid {
+  background: #ef9a9a;
+  border-color: #c62828;
+}
+
+#board-enemy .cell.clickable {
+  cursor: crosshair;
+  background: var(--color-primary-light);
+}
+#board-enemy .cell.clickable:hover {
+  background: var(--color-primary-mid);
+}
+
+.hidden {
+  display: none !important;
+}
+
+#placement-area-aivai {
+  display: flex;
+  gap: 48px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+}
+
+.placement-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.placement-side-controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.ship-list-side {
+  list-style: none;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.ship-list-side li {
+  padding: 5px 13px;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 5px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: grab;
+  user-select: none;
+  transition: opacity 0.15s;
+}
+
+.ship-list-side li[data-ship="carrier"] {
+  background: var(--ship-carrier);
+}
+.ship-list-side li[data-ship="battleship"] {
+  background: var(--ship-battleship);
+}
+.ship-list-side li[data-ship="cruiser"] {
+  background: var(--ship-cruiser);
+}
+.ship-list-side li[data-ship="submarine"] {
+  background: var(--ship-submarine);
+}
+.ship-list-side li[data-ship="destroyer"] {
+  background: var(--ship-destroyer);
+}
+
+.ship-list-side li:hover {
+  opacity: 0.85;
+}
+
+.ship-list-side li.dragging {
+  opacity: 0.5;
+  outline: 2px dashed var(--color-primary);
+  cursor: grabbing;
+}
+
+.ship-list-side li.placed {
+  background: #cfd8dc;
+  color: #78909c;
+  cursor: default;
+  text-decoration: line-through;
+}

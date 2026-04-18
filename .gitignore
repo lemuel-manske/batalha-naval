@@ -6,3 +6,5 @@ dist/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+# ignora apenas se for diretório real (build-web); symlink é versionado
+web/batalha_naval/
