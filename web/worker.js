@@ -124,6 +124,7 @@ function handlePlaceShip({ ship, row, col, dir, player }) {
     console.warn(
       `[worker] posicionamento ignorado: ${ship} em (${row},${col}) dir=${dir} player=${player}`,
     );
+    _sendPlacementState(player || "player1");
     return;
   }
   pyodide.runPython(

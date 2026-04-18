@@ -65,11 +65,10 @@ export function setPhase(phase) {
     elBtnStart.disabled = false;
   } else if (phase === "placement") {
     show(elBtnStart);
+    elBtnStart.disabled = true;
     if (uiState.mode === "aivai") {
-      elBtnStart.disabled = !bothSidesComplete();
       show(elPlacementAivai);
     } else {
-      elBtnStart.disabled = uiState.players.player1.pendingShips.length > 0;
       show(elPlacement);
     }
     show(elBtnCancel);
