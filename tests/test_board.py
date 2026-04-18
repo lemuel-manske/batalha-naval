@@ -1,4 +1,4 @@
-from batalha_naval.board import empty_board, validate_placement
+from batalha_naval.board import empty_board, validate_placement, place_ship, random_placement, SHIPS
 
 
 def test_empty_board_has_10_rows():
@@ -43,3 +43,51 @@ def test_placement_overlaps_existing_ship():
         for r in range(10)
     )
     assert validate_placement(occupied, "destroyer", (0, 0), "h") is False
+
+
+def test_place_ship_fills_cells():
+    board = empty_board()
+    new_board = place_ship(board, "destroyer", (0, 0), "h")
+    assert new_board[0][0] == "destroyer"
+    assert new_board[0][1] == "destroyer"
+
+
+def test_place_ship_does_not_mutate_original():
+    board = empty_board()
+    place_ship(board, "destroyer", (0, 0), "h")
+    assert board[0][0] is None
+
+
+def test_place_ship_vertical():
+    board = empty_board()
+    new_board = place_ship(board, "destroyer", (0, 0), "v")
+    assert new_board[0][0] == "destroyer"
+    assert new_board[1][0] == "destroyer"
+
+
+def test_place_ship_invalid_raises():
+    board = empty_board()
+    try:
+        place_ship(board, "destroyer", (0, 9), "h")
+        assert False, "deveria ter levantado ValueError"
+    except ValueError:
+        pass
+
+
+def test_random_placement_places_all_ships():
+    board = random_placement()
+    placed = {board[r][c] for r in range(10) for c in range(10) if board[r][c] is not None}
+    assert placed == set(SHIPS.keys())
+
+
+def test_random_placement_correct_cell_count():
+    board = random_placement()
+    for ship_name, size in SHIPS.items():
+        count = sum(1 for r in range(10) for c in range(10) if board[r][c] == ship_name)
+        assert count == size
+
+
+def test_random_placement_no_overlap():
+    board = random_placement()
+    cells = [board[r][c] for r in range(10) for c in range(10) if board[r][c] is not None]
+    assert len(cells) == sum(SHIPS.values())

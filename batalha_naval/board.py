@@ -1,4 +1,5 @@
 from typing import Literal
+import random
 
 type Cell = str | None
 type Row = tuple[Cell, ...]
@@ -72,3 +73,21 @@ def place_ship(
         rows[r][c] = ship_name
 
     return tuple(tuple(r) for r in rows)
+
+
+def random_placement() -> Board:
+    board = empty_board()
+
+    for ship_name in SHIPS:
+        placed = False
+
+        while not placed:
+            direction: Direction = random.choice(["h", "v"])
+            row = random.randint(0, BOARD_SIZE - 1)
+            col = random.randint(0, BOARD_SIZE - 1)
+
+            if validate_placement(board, ship_name, (row, col), direction):
+                board = place_ship(board, ship_name, (row, col), direction)
+                placed = True
+
+    return board
