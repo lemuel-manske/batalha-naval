@@ -1,4 +1,5 @@
 from batalha_naval.board import Board, Coord, ShipName, BOARD_SIZE
+from typing import Literal
 
 type Player = str  # "player1" | "player2"
 
@@ -6,6 +7,9 @@ type ShipCells = frozenset[Coord]
 type ShipMap = dict[ShipName, ShipCells]
 
 type GameState = dict
+
+
+type AttackResult = Literal["miss", "hit", "sunk"]
 
 
 def _extract_ships(board: Board) -> ShipMap:
@@ -37,3 +41,25 @@ def new_game(board1: Board, board2: Board) -> GameState:
         "current_turn": "player1",
         "winner": None,
     }
+
+
+def attack(
+    state: GameState,
+    attacker: Player,
+    coord: Coord,
+) -> tuple[GameState, AttackResult]:
+    opponent: Player = "player2" if attacker == "player1" else "player1"
+    r, c = coord
+    cell = state["boards"][opponent][r][c]
+
+    new_attacks = {
+        **state["attacks"],
+        attacker: state["attacks"][attacker] | {coord},
+    }
+    next_turn: Player = opponent
+
+    if cell is None:
+        return {**state, "attacks": new_attacks, "current_turn": next_turn}, "miss"
+
+    # hit/sunk: placeholder — será implementado em seguida
+    return {**state, "attacks": new_attacks, "current_turn": next_turn}, "miss"
