@@ -1,6 +1,6 @@
 import random
 
-from typing import Callable
+from typing import Callable, Literal
 
 from batalha_naval.board import (
     Board,
@@ -11,7 +11,13 @@ from batalha_naval.board import (
     place_ship,
     validate_placement,
 )
-from batalha_naval.game import GameState, Player, new_game as _new_game, attack as _attack, get_winner
+from batalha_naval.game import (
+    GameState,
+    Player,
+    new_game as _new_game,
+    attack as _attack,
+    get_winner,
+)
 
 type Strategy = Callable[[GameState, Player], Coord]
 
@@ -55,7 +61,9 @@ def sample_opponent_board(state: GameState, attacker: Player) -> Board:
 
     # células confirmadas como hit de navios ainda vivos
     known_hits: frozenset[Coord] = frozenset(
-        coord for coord in attacks if opponent_board[coord[0]][coord[1]] is not None
+        coord
+        for coord in attacks
+        if opponent_board[coord[0]][coord[1]] is not None
         and opponent_board[coord[0]][coord[1]] not in sunk_ships
     )
 
@@ -64,7 +72,7 @@ def sample_opponent_board(state: GameState, attacker: Player) -> Board:
         placed = False
 
         while not placed:
-            direction = random.choice(["h", "v"])
+            direction: Literal["h", "v"] = random.choice(["h", "v"])
             row = random.randint(0, BOARD_SIZE - 1)
             col = random.randint(0, BOARD_SIZE - 1)
 
@@ -83,7 +91,8 @@ def sample_opponent_board(state: GameState, attacker: Player) -> Board:
 
             # hits conhecidos deste navio devem estar cobertos pela posição sorteada
             ship_hits = {
-                coord for coord in known_hits
+                coord
+                for coord in known_hits
                 if opponent_board[coord[0]][coord[1]] == ship_name
             }
             if ship_hits and not ship_hits.issubset(set(cells)):
@@ -126,7 +135,7 @@ def mcts_strategy(state: GameState, player: Player) -> Coord:
     # contagem de vitórias por coordenada candidata nas simulações
     wins: dict[Coord, int] = {coord: 0 for coord in candidates}
 
-    strategies = {
+    strategies: dict[Player, Strategy] = {
         "player1": random_strategy,
         "player2": random_strategy,
     }
