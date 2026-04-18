@@ -107,8 +107,8 @@ def sample_opponent_board(state: GameState, attacker: Player) -> Board:
 MCTS_SIMULATIONS = 200
 
 
-def _extract_ships_from_board(board: Board) -> dict:
-    ships: dict = {}
+def _extract_ships_from_board(board: Board) -> dict[str, frozenset[Coord]]:
+    ships: dict[str, set[Coord]] = {}
 
     for r in range(BOARD_SIZE):
         for c in range(BOARD_SIZE):
@@ -132,14 +132,16 @@ def mcts_strategy(state: GameState, player: Player) -> Coord:
         if (r, c) not in attacked
     ]
 
-    # contagem de vitórias por coordenada candidata nas simulações
-    wins: dict[Coord, int] = {coord: 0 for coord in candidates}
+    simulated_wins: dict[Coord, int] = {coord: 0 for coord in candidates}
 
     strategies: dict[Player, Strategy] = {
         "player1": random_strategy,
         "player2": random_strategy,
     }
 
+    # cada iteração amostra um tabuleiro e avalia todos os candidatos contra ele
+    # isso compara os candidatos nas mesmas condições por amostra, produzindo estimativas
+    # mais estáveis do que avaliar cada candidato em amostras independentes
     for _ in range(MCTS_SIMULATIONS):
         sampled_board = sample_opponent_board(state, player)
 
@@ -157,6 +159,6 @@ def mcts_strategy(state: GameState, player: Player) -> Coord:
             final = run_game(sim, strategies)
 
             if get_winner(final) == player:
-                wins[coord] += 1
+                simulated_wins[coord] += 1
 
-    return max(candidates, key=lambda coord: wins[coord])
+    return max(candidates, key=lambda coord: simulated_wins[coord])
