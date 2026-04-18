@@ -7,5 +7,8 @@ SHIPS = {
 }
 
 
+BOARD_SIZE = 10
+
+
 def empty_board():
-    return tuple(tuple(None for _ in range(10)) for _ in range(10))
+    return tuple(tuple(None for _ in range(BOARD_SIZE)) for _ in range(BOARD_SIZE))
