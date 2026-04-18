@@ -1,7 +1,8 @@
-from batalha_naval.board import Board, Coord, ShipName, BOARD_SIZE
 from typing import Literal
 
-type Player = str  # "player1" | "player2"
+from batalha_naval.board import Board, Coord, ShipName, BOARD_SIZE
+
+type Player = Literal["player1", "player2"]
 
 type ShipCells = frozenset[Coord]
 type ShipMap = dict[ShipName, ShipCells]
@@ -71,7 +72,12 @@ def attack(
             opponent: {**state["ships"][opponent], ship_name: remaining},
         }
         return (
-            {**state, "attacks": new_attacks, "ships": new_ships, "current_turn": next_turn},
+            {
+                **state,
+                "attacks": new_attacks,
+                "ships": new_ships,
+                "current_turn": next_turn,
+            },
             "hit",
         )
 
@@ -82,16 +88,18 @@ def attack(
     new_ships = {**state["ships"], opponent: new_opponent_ships}
 
     return (
-        {**state, "attacks": new_attacks, "ships": new_ships, "current_turn": next_turn},
+        {
+            **state,
+            "attacks": new_attacks,
+            "ships": new_ships,
+            "current_turn": next_turn,
+        },
         "sunk",
     )
 
 
 def is_game_over(state: GameState) -> bool:
-    return (
-        len(state["ships"]["player1"]) == 0
-        or len(state["ships"]["player2"]) == 0
-    )
+    return len(state["ships"]["player1"]) == 0 or len(state["ships"]["player2"]) == 0
 
 
 def get_winner(state: GameState) -> Player | None:

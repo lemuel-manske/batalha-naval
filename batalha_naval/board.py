@@ -1,5 +1,6 @@
-from typing import Literal
 import random
+
+from typing import Literal
 
 type Cell = str | None
 type Row = tuple[Cell, ...]
@@ -24,10 +25,7 @@ BOARD_SIZE = 10
 
 
 def empty_board() -> Board:
-    return tuple(
-        tuple(None for _ in range(BOARD_SIZE))
-        for _ in range(BOARD_SIZE)
-    )
+    return tuple(tuple(None for _ in range(BOARD_SIZE)) for _ in range(BOARD_SIZE))
 
 
 def validate_placement(

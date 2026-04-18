@@ -1,5 +1,11 @@
 from batalha_naval.board import random_placement, SHIPS, empty_board, place_ship
-from batalha_naval.game import new_game, attack, is_game_over, get_winner, is_valid_attack
+from batalha_naval.game import (
+    new_game,
+    attack,
+    is_game_over,
+    get_winner,
+    is_valid_attack,
+)
 
 
 def test_new_game_has_both_boards():
@@ -51,7 +57,7 @@ def _game_with_known_boards():
 
 def test_attack_miss_returns_miss():
     state = _game_with_known_boards()
-    new_state, result = attack(state, "player1", (0, 0))
+    _, result = attack(state, "player1", (0, 0))
     assert result == "miss"
 
 
@@ -76,7 +82,7 @@ def test_attack_miss_switches_turn():
 def test_attack_hit_returns_hit():
     state = _game_with_known_boards()
     # destroyer do player2 está em (5,5) e (5,6)
-    new_state, result = attack(state, "player1", (5, 5))
+    _, result = attack(state, "player1", (5, 5))
     assert result == "hit"
 
 
