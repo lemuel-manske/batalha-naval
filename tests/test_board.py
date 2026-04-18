@@ -37,7 +37,6 @@ def test_placement_out_of_bounds_vertical():
 
 
 def test_placement_overlaps_existing_ship():
-    board = empty_board()
     occupied = tuple(
         tuple("destroyer" if (r, c) == (0, 0) else None for c in range(10))
         for r in range(10)
