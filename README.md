@@ -2,6 +2,12 @@
 
 Este repositório contém a implementação do jogo de batalha naval em Python, com foco em conceitos de teoria dos jogos, inteligência artificial e algoritmos de busca competitiva.
 
+Acesse em: https://lemuel-manske.github.io/batalha-naval/
+
+# Decisões
+
+Decisões de algoritmos estão mantidas em [DECISIONS.md](DECISIONS.md).
+
 # Sobre o jogo
 
 ## Objetivo
@@ -48,61 +54,10 @@ O jogo termina quando um jogador afunda todos os navios do adversário. Esse jog
 
 # Sobre a implementação
 
-## Diretrizes
-
-- Implementar em Python utilizando paradigma funcional
-- Não utilizar classes
-- Funções devem ser puras, sem efeitos colaterais e sem modificar o estado diretamente
-- Funções que alteram o estado devem retornar uma nova versão do estado, sem modificar o original
-- A lógica do jogo deve ser independente da interface
-- A interface deve estar em um módulo separado e se comunicar com a lógica apenas por meio de funções puras
-
-## Interface
-
-- A interface gráfica deve ser implementada utilizando PyGame
-- Deve representar o tabuleiro como uma grade de células
-- Cada célula deve ter preenchimento suave e bordas mais destacadas
-- Utilizar cores distintas para cada tipo de navio
-- O design deve ser limpo e sem poluição visual
-
-## Modos de jogo
-
-- Deve ser possível jogar:
-  - IA contra IA
-  - Humano contra IA
-
-## Inteligência artificial
-
-- Utilizar o algoritmo Monte Carlo Tree Search (MCTS)
-- Aplicar heurísticas para melhorar a eficiência da busca
-
-## Testes
-
-- Seguir a abordagem de TDD (Test-Driven Development)
-- Começar sempre pelo caso mais simples possível
-- Utilizar PyTest
-- Testar apenas a interface pública do sistema
-
-## Ferramentas e dependências
-
-- Utilizar bibliotecas como NumPy e NetworkX quando necessário
-- Gerenciar dependências com Poetry (pyproject.toml)
-- Criar um Makefile para facilitar execução de testes, lint e outras tarefas
-- Utilizar Black para formatação de código, seguindo PEP 8
-
-## Convenções
-
-- Comentários devem ser escritos em português
-- Código deve ser escrito em inglês
-- Comentários devem explicar decisões e algoritmos relevantes, evitando explicações óbvias e header comments, como: "Aqui estão as funções de utilidade para o jogo"
-
-## Restrições
-
-- Não utilizar classes
-- Não incluir código morto
-- Não comentar código autoexplicativo
-- Não utilizar bibliotecas de IA pré-construídas como TensorFlow ou PyTorch
-
-## Uso de IA generativa
-
-- Utilizar IA generativa apenas para auxiliar na escrita de código, não para gerar código completo
+- Lógica do jogo em Python, paradigma funcional (sem classes, funções puras, estado imutável)
+- Interface web rodando inteiramente no browser via [Pyodide](https://pyodide.org) - o Python executa em um Web Worker, sem servidor
+- Frontend em JS + CSS, sem frameworks
+- IA usa estratégia *probability density + hunt/target*: modo alvo após um hit (foca nas adjacentes para afundar o navio) e modo caça com filtro de paridade e heatmap Monte Carlo no restante
+- Dois modos de jogo: Humano vs IA e IA vs IA
+- Testes com pytest; gerenciamento de dependências com Poetry
+- Deploy automático no GitHub Pages via GitHub Actions
