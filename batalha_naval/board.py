@@ -21,6 +21,6 @@ def validate_placement(board, ship_name, start, direction):
         cells = [(row, col + i) for i in range(size)]
     else:
         cells = [(row + i, col) for i in range(size)]
-    if any(r > 9 or c > 9 for r, c in cells):
+    if any(r >= BOARD_SIZE or c >= BOARD_SIZE for r, c in cells):
         return False
     return all(board[r][c] is None for r, c in cells)
