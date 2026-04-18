@@ -42,11 +42,7 @@ def _get_hot_cells(state: GameState, player: Player) -> list[Coord]:
     attacks = state["attacks"][player]
     opp_board = state["boards"][opp]
     living_ships = set(state["ships"][opp].keys())
-    return [
-        coord
-        for coord in attacks
-        if opp_board[coord[0]][coord[1]] in living_ships
-    ]
+    return [coord for coord in attacks if opp_board[coord[0]][coord[1]] in living_ships]
 
 
 def _target_candidates(
@@ -90,7 +86,9 @@ def _target_candidates(
             cluster = list(group)
             if len(cluster) > 1:
                 clusters.append(cluster)
-        for c, group in groupby(sorted(hot_cells, key=lambda x: x[1]), key=lambda x: x[1]):
+        for c, group in groupby(
+            sorted(hot_cells, key=lambda x: x[1]), key=lambda x: x[1]
+        ):
             cluster = list(group)
             if len(cluster) > 1:
                 clusters.append(cluster)
@@ -118,9 +116,7 @@ def _target_candidates(
     return [
         (er, ec)
         for er, ec in endpoints
-        if 0 <= er < BOARD_SIZE
-        and 0 <= ec < BOARD_SIZE
-        and (er, ec) not in attacked
+        if 0 <= er < BOARD_SIZE and 0 <= ec < BOARD_SIZE and (er, ec) not in attacked
     ]
 
 
@@ -141,13 +137,11 @@ def _parity_candidates(state: GameState, player: Player) -> list[Coord]:
         for c in range(BOARD_SIZE):
             if (r, c) in attacked:
                 continue
-            fits_h = (
-                c + min_size <= BOARD_SIZE
-                and all((r, c + i) not in known_misses for i in range(min_size))
+            fits_h = c + min_size <= BOARD_SIZE and all(
+                (r, c + i) not in known_misses for i in range(min_size)
             )
-            fits_v = (
-                r + min_size <= BOARD_SIZE
-                and all((r + i, c) not in known_misses for i in range(min_size))
+            fits_v = r + min_size <= BOARD_SIZE and all(
+                (r + i, c) not in known_misses for i in range(min_size)
             )
             if fits_h or fits_v:
                 candidates.append((r, c))
@@ -345,4 +339,6 @@ def smart_strategy(state: GameState, player: Player) -> Coord:
     best_score = max(tally.values())
     best = [coord for coord, score in tally.items() if score == best_score]
 
-    return min(best, key=lambda coord: abs(coord[0] - _CENTER) + abs(coord[1] - _CENTER))
+    return min(
+        best, key=lambda coord: abs(coord[0] - _CENTER) + abs(coord[1] - _CENTER)
+    )

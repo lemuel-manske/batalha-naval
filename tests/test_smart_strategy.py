@@ -25,6 +25,7 @@ def test_smart_strategy_does_not_return_attacked_coord():
 
 def test_smart_strategy_targets_adjacent_after_hit():
     from batalha_naval.board import place_ship, empty_board
+
     board2 = empty_board()
     board2 = place_ship(board2, "destroyer", (5, 5), "h")
     board2 = place_ship(board2, "carrier", (0, 0), "h")
@@ -43,6 +44,7 @@ def test_smart_strategy_targets_adjacent_after_hit():
 
 def test_smart_strategy_continues_axis_after_two_hits():
     from batalha_naval.board import place_ship, empty_board
+
     board2 = empty_board()
     board2 = place_ship(board2, "carrier", (5, 3), "h")
     board2 = place_ship(board2, "battleship", (0, 0), "h")
@@ -61,6 +63,7 @@ def test_smart_strategy_continues_axis_after_two_hits():
 
 def test_smart_strategy_falls_through_when_all_target_candidates_attacked():
     from batalha_naval.board import place_ship, empty_board
+
     board2 = empty_board()
     board2 = place_ship(board2, "destroyer", (5, 5), "h")
     board2 = place_ship(board2, "carrier", (0, 0), "h")
