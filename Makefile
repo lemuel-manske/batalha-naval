@@ -6,3 +6,6 @@ fmt:
 
 lint:
 	poetry run black --check .
+
+typecheck:
+	poetry run mypy batalha_naval
