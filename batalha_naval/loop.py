@@ -9,7 +9,7 @@ def play_turn(
     strategies: Strategies,
 ) -> tuple[GameState, AttackResult]:
     current: Player = state["current_turn"]
-    strategy = strategies[current]
+    strategy: Strategy = strategies[current]
 
     coord = strategy(state, current)
 
