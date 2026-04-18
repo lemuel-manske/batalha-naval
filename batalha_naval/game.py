@@ -85,3 +85,33 @@ def attack(
         {**state, "attacks": new_attacks, "ships": new_ships, "current_turn": next_turn},
         "sunk",
     )
+
+
+def is_game_over(state: GameState) -> bool:
+    return (
+        len(state["ships"]["player1"]) == 0
+        or len(state["ships"]["player2"]) == 0
+    )
+
+
+def get_winner(state: GameState) -> Player | None:
+    if len(state["ships"]["player2"]) == 0:
+        return "player1"
+
+    if len(state["ships"]["player1"]) == 0:
+        return "player2"
+
+    return None
+
+
+def is_valid_attack(
+    state: GameState,
+    attacker: Player,
+    coord: Coord,
+) -> bool:
+    r, c = coord
+
+    if not (0 <= r < BOARD_SIZE and 0 <= c < BOARD_SIZE):
+        return False
+
+    return coord not in state["attacks"][attacker]

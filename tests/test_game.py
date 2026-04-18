@@ -1,5 +1,5 @@
 from batalha_naval.board import random_placement, SHIPS, empty_board, place_ship
-from batalha_naval.game import new_game, attack
+from batalha_naval.game import new_game, attack, is_game_over, get_winner, is_valid_attack
 
 
 def test_new_game_has_both_boards():
@@ -96,3 +96,61 @@ def test_attack_sunk_removes_ship_from_state():
     state, _ = attack(state, "player2", (9, 9))
     state, _ = attack(state, "player1", (5, 6))
     assert "destroyer" not in state["ships"]["player2"]
+
+
+def test_game_not_over_at_start():
+    board1 = place_ship(empty_board(), "destroyer", (0, 0), "h")
+    board2 = place_ship(empty_board(), "destroyer", (5, 5), "h")
+    state = new_game(board1, board2)
+    assert is_game_over(state) is False
+
+
+def test_game_over_when_all_ships_sunk():
+    board1 = place_ship(empty_board(), "destroyer", (0, 0), "h")
+    board2 = place_ship(empty_board(), "destroyer", (5, 5), "h")
+    state = new_game(board1, board2)
+    state, _ = attack(state, "player1", (5, 5))
+    state, _ = attack(state, "player2", (9, 9))
+    state, _ = attack(state, "player1", (5, 6))
+    assert is_game_over(state) is True
+
+
+def test_get_winner_none_at_start():
+    board1 = place_ship(empty_board(), "destroyer", (0, 0), "h")
+    board2 = place_ship(empty_board(), "destroyer", (5, 5), "h")
+    state = new_game(board1, board2)
+    assert get_winner(state) is None
+
+
+def test_get_winner_after_sinking_all():
+    board1 = place_ship(empty_board(), "destroyer", (0, 0), "h")
+    board2 = place_ship(empty_board(), "destroyer", (5, 5), "h")
+    state = new_game(board1, board2)
+    state, _ = attack(state, "player1", (5, 5))
+    state, _ = attack(state, "player2", (9, 9))
+    state, _ = attack(state, "player1", (5, 6))
+    assert get_winner(state) == "player1"
+
+
+def test_valid_attack_on_fresh_game():
+    board1 = place_ship(empty_board(), "destroyer", (0, 0), "h")
+    board2 = place_ship(empty_board(), "destroyer", (5, 5), "h")
+    state = new_game(board1, board2)
+    assert is_valid_attack(state, "player1", (0, 0)) is True
+
+
+def test_invalid_attack_already_attacked():
+    board1 = place_ship(empty_board(), "destroyer", (0, 0), "h")
+    board2 = place_ship(empty_board(), "destroyer", (5, 5), "h")
+    state = new_game(board1, board2)
+    state, _ = attack(state, "player1", (0, 0))
+    state, _ = attack(state, "player2", (9, 9))
+    assert is_valid_attack(state, "player1", (0, 0)) is False
+
+
+def test_invalid_attack_out_of_bounds():
+    board1 = place_ship(empty_board(), "destroyer", (0, 0), "h")
+    board2 = place_ship(empty_board(), "destroyer", (5, 5), "h")
+    state = new_game(board1, board2)
+    assert is_valid_attack(state, "player1", (10, 0)) is False
+    assert is_valid_attack(state, "player1", (0, 10)) is False
