@@ -17,3 +17,6 @@ build-web:
 	rm -rf web/batalha_naval
 	mkdir -p web/batalha_naval
 	cp batalha_naval/*.py web/batalha_naval/
+
+serve:
+	cd web && python3 -m http.server 8000
