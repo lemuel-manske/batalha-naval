@@ -276,7 +276,7 @@ def mcts_strategy(
 
     # MCTS é um anytime algorithm: quanto mais tempo, melhor a estimativa.
     # o loop roda simulações até o budget expirar e retorna o melhor resultado
-    # parcial — equivalente ao iterative deepening de Russell & Norvig cap. 5.
+    # parcial - equivalente ao iterative deepening do livro do Russell (cap. 5).
     deadline = time.monotonic() + time_budget
     while time.monotonic() < deadline:
         sampled_board = sample_opponent_board(state, player)
@@ -304,6 +304,9 @@ N_SAMPLES = 200
 _CENTER = 4.5
 
 
+# essa estratégia combina duas heurísticas: caça (procar por próximos hits)
+# e alvo (procurar por células mais prováveis de conter um navio, mesmo sem hits próximos).
+# então, o fluxo fica +-: procurar por alvo e então próximos hits.
 def smart_strategy(state: GameState, player: Player) -> Coord:
     attacked = state["attacks"][player]
 
