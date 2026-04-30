@@ -1,9 +1,15 @@
+import random
+
 from typing import Literal
 
 from batalha_naval.board import (
     BOARD_SIZE,
     Board,
     Coord,
+    SHIPS,
+    can_place_ship,
+    empty_board,
+    place_ship,
 )
 from batalha_naval.utils import extract_ships
 
@@ -64,7 +70,6 @@ def attack(
         **state["attacks"],
         attacker: state["attacks"][attacker] | frozenset({coord}),
     }
-    # o turno sempre passa para o oponente, independente do resultado
     next_turn = opp
 
     if cell is None:
@@ -88,7 +93,6 @@ def attack(
             "hit",
         )
 
-    # navio sem células restantes, então remove do mapa (sunk)
     new_opponent_ships = {
         k: v for k, v in state["ships"][opp].items() if k != ship_name
     }
@@ -142,3 +146,75 @@ def is_valid_attack(
         return False
 
     return coord not in state["attacks"][attacker]
+
+
+def sample_opponent_board(state: GameState, attacker: Player) -> Board:
+    '''
+    Given the current game state and the attacker player, this function generates a random sample of the opponent's board.
+
+    - Known misses are guaranteed to be empty
+    - Sunk ships are placed in their exact positions
+    - Known hits of still alive ships are guaranteed to be covered by the placed ship
+    '''
+
+    opp = opponent(attacker)
+    attacks = state["attacks"][attacker]
+    opponent_board = state["boards"][opp]
+
+    known_misses: frozenset[Coord] = frozenset(
+        coord for coord in attacks if opponent_board[coord[0]][coord[1]] is None
+    )
+
+    sunk_ships = set(SHIPS.keys()) - set(state["ships"][opp].keys())
+
+    board = empty_board()
+    rows = [list(row) for row in board]
+
+    for r in range(BOARD_SIZE):
+        for c in range(BOARD_SIZE):
+            if opponent_board[r][c] in sunk_ships:
+                rows[r][c] = opponent_board[r][c]
+
+    board = tuple(tuple(row) for row in rows)
+
+    known_hits: frozenset[Coord] = frozenset(
+        coord
+        for coord in attacks
+        if opponent_board[coord[0]][coord[1]] is not None
+        and opponent_board[coord[0]][coord[1]] not in sunk_ships
+    )
+
+    for ship_name in state["ships"][opp]:
+        placed = False
+
+        while not placed:
+            direction: Literal["h", "v"] = random.choice(["h", "v"])
+            row = random.randint(0, BOARD_SIZE - 1)
+            col = random.randint(0, BOARD_SIZE - 1)
+
+            if not can_place_ship(board, ship_name, (row, col), direction):
+                continue
+
+            size = SHIPS[ship_name]
+
+            if direction == "h":
+                cells = [(row, col + i) for i in range(size)]
+            else:
+                cells = [(row + i, col) for i in range(size)]
+
+            if any(cell in known_misses for cell in cells):
+                continue
+
+            ship_hits = {
+                coord
+                for coord in known_hits
+                if opponent_board[coord[0]][coord[1]] == ship_name
+            }
+
+            if ship_hits and not ship_hits.issubset(set(cells)):
+                continue
+
+            board = place_ship(board, ship_name, (row, col), direction)
+            placed = True
+
+    return board

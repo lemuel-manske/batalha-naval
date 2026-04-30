@@ -3,8 +3,8 @@ name = "batalha-naval"
 version = "0.0.0"
 description = "A simple implementation of the classic Battleship game in Python, enhanced by AI."
 authors = [
-    {name = "lemuel-manske", email = "lemuelkaue@gmail.com"}
-    {name = "FabioFelsky"}
+    {name = "lemuel-manske", email = "lemuelkaue@gmail.com"},
+    {name = "FabioFelsky"},
     {name = "Lucasgustzaki"}
 ]
 readme = "README.md"

@@ -2,16 +2,12 @@ import random
 import time
 
 from itertools import groupby
-from typing import Callable, Literal
+from typing import Callable
 
 from batalha_naval.board import (
     BOARD_SIZE,
-    Board,
     Coord,
     SHIPS,
-    can_place_ship,
-    empty_board,
-    place_ship,
 )
 from batalha_naval.game import (
     GameState,
@@ -19,84 +15,14 @@ from batalha_naval.game import (
     attack,
     get_winner,
     opponent,
+    sample_opponent_board,
 )
 from batalha_naval.utils import extract_ships
 
 '''
-A strategy defines a function that, given the current game state and the player to move, returns a coordinate to attack.
+A strategy is a function that, given the current game state and the player to move, returns a coordinate to attack.
 '''
 type Strategy = Callable[[GameState, Player], Coord]
-
-
-def sample_opponent_board(state: GameState, attacker: Player) -> Board:
-    opp = opponent(attacker)
-    attacks = state["attacks"][attacker]
-    opponent_board = state["boards"][opp]
-
-    # células confirmadas como miss devem permanecer vazias na amostragem
-    known_misses: frozenset[Coord] = frozenset(
-        coord for coord in attacks if opponent_board[coord[0]][coord[1]] is None
-    )
-
-    # navios já afundados têm posição exata conhecida
-    sunk_ships = set(SHIPS.keys()) - set(state["ships"][opp].keys())
-
-    # reconstrói o tabuleiro com os navios afundados nas posições reais
-    board = empty_board()
-    rows = [list(row) for row in board]
-
-    for r in range(BOARD_SIZE):
-        for c in range(BOARD_SIZE):
-            if opponent_board[r][c] in sunk_ships:
-                rows[r][c] = opponent_board[r][c]
-
-    board = tuple(tuple(row) for row in rows)
-
-    # células confirmadas como hit de navios ainda vivos
-    known_hits: frozenset[Coord] = frozenset(
-        coord
-        for coord in attacks
-        if opponent_board[coord[0]][coord[1]] is not None
-        and opponent_board[coord[0]][coord[1]] not in sunk_ships
-    )
-
-    # posiciona aleatoriamente os navios ainda vivos
-    # respeitando misses e hits conhecidos
-    for ship_name in state["ships"][opp]:
-        placed = False
-
-        while not placed:
-            direction: Literal["h", "v"] = random.choice(["h", "v"])
-            row = random.randint(0, BOARD_SIZE - 1)
-            col = random.randint(0, BOARD_SIZE - 1)
-
-            if not can_place_ship(board, ship_name, (row, col), direction):
-                continue
-
-            size = SHIPS[ship_name]
-
-            if direction == "h":
-                cells = [(row, col + i) for i in range(size)]
-            else:
-                cells = [(row + i, col) for i in range(size)]
-
-            if any(cell in known_misses for cell in cells):
-                continue
-
-            # hits conhecidos deste navio devem estar cobertos
-            # pela posição sorteada
-            ship_hits = {
-                coord
-                for coord in known_hits
-                if opponent_board[coord[0]][coord[1]] == ship_name
-            }
-            if ship_hits and not ship_hits.issubset(set(cells)):
-                continue
-
-            board = place_ship(board, ship_name, (row, col), direction)
-            placed = True
-
-    return board
 
 
 def random_strategy(state: GameState, player: Player) -> Coord:
@@ -283,18 +209,16 @@ def _target_candidates(
             and (nr, nc) not in attacked
         ]
 
-    rows = [r for r, _ in hot_cells]
-    cols = [c for _, c in hot_cells]
-    row_set = set(rows)
-    col_set = set(cols)
+    rows = set([r for r, _ in hot_cells])
+    cols = set([c for _, c in hot_cells])
 
-    if len(row_set) == 1:
+    if len(rows) == 1:
         aligned = sorted(hot_cells, key=lambda x: x[1])
         r = aligned[0][0]
         min_c = aligned[0][1]
         max_c = aligned[-1][1]
         endpoints = [(r, min_c - 1), (r, max_c + 1)]
-    elif len(col_set) == 1:
+    elif len(cols) == 1:
         aligned = sorted(hot_cells, key=lambda x: x[0])
         c = aligned[0][1]
         min_r = aligned[0][0]

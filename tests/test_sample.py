@@ -1,6 +1,5 @@
 from batalha_naval.board import random_placement, BOARD_SIZE, SHIPS
-from batalha_naval.game import new_game, attack
-from batalha_naval.strategy import sample_opponent_board
+from batalha_naval.game import new_game, attack, sample_opponent_board
 
 
 def test_sample_opponent_board_places_all_ships():
