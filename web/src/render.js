@@ -2,7 +2,7 @@ import { BOARD_SIZE, SHIP_LABELS, MODE_CONFIG } from "./constants.js";
 import { uiState } from "./state.js";
 import { elBoardPlayer, elBoardEnemy, elStatus } from "./ui.js";
 
-export function boardContainerFor(player) {
+function boardContainerFor(player) {
   return player === "player2" ? elBoardEnemy : elBoardPlayer;
 }
 

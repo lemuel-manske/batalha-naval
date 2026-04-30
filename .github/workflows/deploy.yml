@@ -26,6 +26,9 @@ jobs:
       - name: Build web
         run: make build-web
 
+      - name: Strip dev files from web/
+        run: rm -rf web/node_modules web/tests web/package.json web/package-lock.json web/vitest.config.js web/README.md
+
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3

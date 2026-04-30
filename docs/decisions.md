@@ -1,6 +1,6 @@
 # Inteligência artificial
 
-Qual algoritmo usar?
+Qual algoritmo usar? O que define um ser melhor que o outro?
 
 ## Minimax
 

@@ -1,0 +1,23 @@
+document.body.innerHTML = `
+  <div id="loading-indicator"></div>
+  <div id="game-status"></div>
+  <div id="end-banner"></div>
+  <div id="end-message"></div>
+  <div id="placement-area"></div>
+  <div id="placement-area-aivai"></div>
+  <div id="board-player"></div>
+  <div id="board-enemy"></div>
+  <button id="btn-start"></button>
+  <button id="btn-cancel"></button>
+  <button id="btn-restart"></button>
+  <button id="btn-hvai"></button>
+  <button id="btn-aivai"></button>
+  <span id="label-player"></span>
+  <span id="label-enemy"></span>
+  <button id="btn-rotate"></button>
+  <button id="btn-shuffle"></button>
+  <button id="btn-clear"></button>
+  <ul id="ship-list"></ul>
+  <ul id="ship-list-1"></ul>
+  <ul id="ship-list-2"></ul>
+`

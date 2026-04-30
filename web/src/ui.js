@@ -27,7 +27,7 @@ export function hide(el) {
   el.classList.add("hidden");
 }
 
-export function setPlaceholder(board, on) {
+function setPlaceholder(board, on) {
   board.classList.toggle("placeholder", on);
 }
 

@@ -18,4 +18,4 @@ export const uiState = {
   drag: { ship: null, cell: null },
   aiScheduled: false,
   gameState: null,
-};
+}

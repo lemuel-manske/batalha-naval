@@ -1,10 +1,8 @@
 __pycache__/
-*.py[cod]
-*.egg-info/
-dist/
-.venv/
-.pytest_cache/
+
 .mypy_cache/
+.pytest_cache/
 .ruff_cache/
-# ignora apenas se for diretório real (build-web); symlink é versionado
-web/batalha_naval/
+.venv/
+
+**/node_modules/

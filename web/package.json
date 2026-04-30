@@ -1,0 +1,23 @@
+{
+  "name": "batalha-naval",
+  "version": "0.0.0",
+  "description": "Browser-based battleship game powered by Pyodide",
+  "license": "MIT",
+  "homepage": "https://github.com/lemuel-manske/batalha-naval",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lemuel-manske/batalha-naval.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lemuel-manske/batalha-naval/issues"
+  },
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "jsdom": "^29.1.1",
+    "vitest": "^2.0.0"
+  }
+}

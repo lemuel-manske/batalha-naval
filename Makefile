@@ -1,5 +1,10 @@
-test:
+test-py:
 	poetry run pytest -v
+
+test-js:
+	npm test --prefix web
+
+test: test-py test-js
 
 fmt:
 	poetry run black .
