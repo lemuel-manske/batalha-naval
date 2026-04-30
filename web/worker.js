@@ -24,7 +24,7 @@ sys.path.insert(0, "/")
 
   // importa tudo uma vez aqui para evitar re-imports em cada handler
   pyodide.runPython(`
-from batalha_naval.board import empty_board, random_placement, SHIPS, validate_placement, place_ship, BOARD_SIZE
+from batalha_naval.board import empty_board, random_placement, SHIPS, can_place_ship, place_ship, BOARD_SIZE
 from batalha_naval.game import new_game, attack as _attack, is_game_over, get_winner, is_valid_attack
 from batalha_naval.strategy import smart_strategy, random_strategy
 from batalha_naval.loop import run_game
@@ -61,7 +61,7 @@ self.onmessage = async function (e) {
   try {
     if (msg.type === "init") {
       await handleInit(msg.mode);
-    } else if (msg.type === "validate_placement") {
+    } else if (msg.type === "can_place_ship") {
       handleValidatePlacement(msg);
     } else if (msg.type === "place_ship") {
       handlePlaceShip(msg);
@@ -99,7 +99,7 @@ function handleValidatePlacement({ ship, row, col, dir, player }) {
   const boardVar =
     player === "player2" ? "_placement_board2" : "_placement_board";
   const result = pyodide.runPython(`
-_valid = validate_placement(${boardVar}, "${ship}", (${row}, ${col}), "${dir}")
+_valid = can_place_ship(${boardVar}, "${ship}", (${row}, ${col}), "${dir}")
 _size = SHIPS["${ship}"]
 if "${dir}" == "h":
     _cells = [[${row}, ${col} + i] for i in range(_size)]
@@ -118,7 +118,7 @@ function handlePlaceShip({ ship, row, col, dir, player }) {
   const boardVar =
     player === "player2" ? "_placement_board2" : "_placement_board";
   const valid = pyodide.runPython(
-    `validate_placement(${boardVar}, "${ship}", (${row}, ${col}), "${dir}")`,
+    `can_place_ship(${boardVar}, "${ship}", (${row}, ${col}), "${dir}")`,
   );
   if (!valid) {
     console.warn(

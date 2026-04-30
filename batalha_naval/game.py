@@ -1,11 +1,13 @@
 from typing import Literal
 
-from batalha_naval.board import Board, Coord, ShipName, BOARD_SIZE
+from batalha_naval.board import (
+    BOARD_SIZE,
+    Board,
+    Coord,
+)
+from batalha_naval.utils import extract_ships
 
 type Player = Literal["player1", "player2"]
-
-type ShipCells = frozenset[Coord]
-type ShipMap = dict[ShipName, ShipCells]
 
 type GameState = dict
 
@@ -14,30 +16,26 @@ type AttackResult = Literal["miss", "hit", "sunk"]
 
 
 def opponent(player: Player) -> Player:
+    '''
+    Returns the opponent player.
+    '''
+
     return "player2" if player == "player1" else "player1"
 
 
-def _extract_ships(board: Board) -> ShipMap:
-    ships: dict[ShipName, set[Coord]] = {}
-
-    for r in range(BOARD_SIZE):
-        for c in range(BOARD_SIZE):
-            name = board[r][c]
-            if name is not None:
-                ships.setdefault(name, set()).add((r, c))
-
-    return {name: frozenset(cells) for name, cells in ships.items()}
-
-
 def new_game(board1: Board, board2: Board) -> GameState:
+    '''
+    Inits the game.
+    '''
+
     return {
         "boards": {
             "player1": board1,
             "player2": board2,
         },
         "ships": {
-            "player1": _extract_ships(board1),
-            "player2": _extract_ships(board2),
+            "player1": extract_ships(board1),
+            "player2": extract_ships(board2),
         },
         "attacks": {
             "player1": frozenset(),
@@ -53,27 +51,32 @@ def attack(
     attacker: Player,
     coord: Coord,
 ) -> tuple[GameState, AttackResult]:
-    opponent: Player = "player2" if attacker == "player1" else "player1"
+    '''
+    Executes an attack from the attacker player to the opponent at the given coordinate.
+    '''
+
+    opp = opponent(attacker)
+
     r, c = coord
-    cell = state["boards"][opponent][r][c]
+    cell = state["boards"][opp][r][c]
 
     new_attacks = {
         **state["attacks"],
         attacker: state["attacks"][attacker] | frozenset({coord}),
     }
     # o turno sempre passa para o oponente, independente do resultado
-    next_turn: Player = opponent
+    next_turn = opp
 
     if cell is None:
         return {**state, "attacks": new_attacks, "current_turn": next_turn}, "miss"
 
-    ship_name: ShipName = cell
-    remaining: ShipCells = state["ships"][opponent][ship_name] - frozenset({coord})
+    ship_name = cell
+    remaining = state["ships"][opp][ship_name] - frozenset({coord})
 
     if remaining:
         new_ships = {
             **state["ships"],
-            opponent: {**state["ships"][opponent], ship_name: remaining},
+            opp: {**state["ships"][opp], ship_name: remaining},
         }
         return (
             {
@@ -85,11 +88,11 @@ def attack(
             "hit",
         )
 
-    # navio sem células restantes, então remove do mapa
+    # navio sem células restantes, então remove do mapa (sunk)
     new_opponent_ships = {
-        k: v for k, v in state["ships"][opponent].items() if k != ship_name
+        k: v for k, v in state["ships"][opp].items() if k != ship_name
     }
-    new_ships = {**state["ships"], opponent: new_opponent_ships}
+    new_ships = {**state["ships"], opp: new_opponent_ships}
 
     return (
         {
@@ -103,10 +106,18 @@ def attack(
 
 
 def is_game_over(state: GameState) -> bool:
+    '''
+    Checks if the game is over.
+    '''
+
     return len(state["ships"]["player1"]) == 0 or len(state["ships"]["player2"]) == 0
 
 
 def get_winner(state: GameState) -> Player | None:
+    '''
+    Returns the winner player if the game is over, otherwise returns `None`.
+    '''
+
     if len(state["ships"]["player2"]) == 0:
         return "player1"
 
@@ -121,6 +132,10 @@ def is_valid_attack(
     attacker: Player,
     coord: Coord,
 ) -> bool:
+    '''
+    Validates if the attack from the attacker player to the opponent at the given coordinate is valid (i.e., within bounds and not previously attacked).
+    '''
+
     r, c = coord
 
     if not (0 <= r < BOARD_SIZE and 0 <= c < BOARD_SIZE):

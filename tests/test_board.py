@@ -1,6 +1,6 @@
 from batalha_naval.board import (
     empty_board,
-    validate_placement,
+    can_place_ship,
     place_ship,
     random_placement,
     SHIPS,
@@ -24,22 +24,22 @@ def test_empty_board_all_cells_are_none():
 
 def test_valid_placement_horizontal():
     board = empty_board()
-    assert validate_placement(board, "destroyer", (0, 0), "h") is True
+    assert can_place_ship(board, "destroyer", (0, 0), "h") is True
 
 
 def test_valid_placement_vertical():
     board = empty_board()
-    assert validate_placement(board, "destroyer", (0, 0), "v") is True
+    assert can_place_ship(board, "destroyer", (0, 0), "v") is True
 
 
 def test_placement_out_of_bounds_horizontal():
     board = empty_board()
-    assert validate_placement(board, "destroyer", (0, 9), "h") is False
+    assert can_place_ship(board, "destroyer", (0, 9), "h") is False
 
 
 def test_placement_out_of_bounds_vertical():
     board = empty_board()
-    assert validate_placement(board, "destroyer", (9, 0), "v") is False
+    assert can_place_ship(board, "destroyer", (9, 0), "v") is False
 
 
 def test_placement_overlaps_existing_ship():
@@ -47,7 +47,7 @@ def test_placement_overlaps_existing_ship():
         tuple("destroyer" if (r, c) == (0, 0) else None for c in range(10))
         for r in range(10)
     )
-    assert validate_placement(occupied, "destroyer", (0, 0), "h") is False
+    assert can_place_ship(occupied, "destroyer", (0, 0), "h") is False
 
 
 def test_place_ship_fills_cells():

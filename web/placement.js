@@ -5,7 +5,7 @@ function validatePreviewAt(r, c, worker) {
   const { ship } = uiState.drag;
   if (!ship) return;
   worker.postMessage({
-    type: "validate_placement",
+    type: "can_place_ship",
     ship: ship.name,
     row: r,
     col: c,

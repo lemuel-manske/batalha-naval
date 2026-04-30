@@ -4,6 +4,22 @@ Este repositório contém a implementação do jogo de batalha naval em Python, 
 
 Acesse em: https://lemuel-manske.github.io/batalha-naval/
 
+# Ambiente
+
+- Instalar `poetry`
+
+```bash
+poetry install
+```
+
+- Rodar testes
+
+```bashbash
+make test
+```
+
+Todos os comandos estão disponíveis em [Makefile](Makefile).
+
 # Decisões
 
 Decisões de algoritmos estão mantidas em [DECISIONS.md](DECISIONS.md).
