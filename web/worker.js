@@ -6,7 +6,7 @@ async function initPyodide() {
   pyodide = await loadPyodide();
 
   // monta os módulos Python no filesystem virtual do Pyodide
-  const modules = ["__init__", "board", "game", "strategy", "loop"];
+  const modules = ["__init__", "board", "utils", "game", "strategy", "loop"];
 
   pyodide.FS.mkdirTree("/batalha_naval");
   for (const mod of modules) {
