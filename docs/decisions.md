@@ -9,7 +9,7 @@ Minimas é, provavelmente, o algoritmo de busca mais conhecido para jogos de tab
 Porém, o Minimax é inadequado para batalha naval por ser um **jogo de informação imperfeita**. O jogador não tem acesso ao estado completo do jogo (posição dos navios inimigos), o que inviabiliza a construção de uma árvore de jogo precisa.
 Além disso, a complexidade combinatória do espaço de estados torna o Minimax impraticável mesmo com otimizações como poda alfa-beta.
 
-Há ainda uma razão estrutural mais fundamental: **o Minimax pressupõe que o agente pode minimizar a escolha do adversário**, ou seja, que as ações de um jogador restringem ou influenciam as opções do outro. No Batalha Naval isso não ocorre — cada jogador resolve seu próprio problema de busca de forma completamente independente. O oponente não reage às suas jogadas nem você interfere nas dele. Não existe nó MIN a ser explorado porque não há ação adversarial a minimizar.
+Há ainda uma razão estrutural mais fundamental: **o Minimax pressupõe que o agente pode minimizar a escolha do adversário**, ou seja, que as ações de um jogador restringem ou influenciam as opções do outro. No Batalha Naval isso não ocorre - cada jogador resolve seu próprio problema de busca de forma completamente independente. O oponente não reage às suas jogadas nem você interfere nas dele. Não existe nó MIN a ser explorado porque não há ação adversarial a minimizar.
 
 ## Monte Carlo Tree Search (MCTS)
 
