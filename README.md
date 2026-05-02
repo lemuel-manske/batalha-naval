@@ -39,8 +39,8 @@ See [`web/`](web/) for frontend details.
 
 The AI uses a *probability density + hunt/target* approach:
 
-- **Hunt mode** — parity filter and Monte Carlo heatmap to pick the highest-probability cell
-- **Target mode** — after a hit, focuses on adjacent cells to finish sinking the ship
+- **Hunt mode** - parity filter and Monte Carlo heatmap to pick the highest-probability cell
+- **Target mode** - after a hit, focuses on adjacent cells to finish sinking the ship
 
 ## Docs
 
