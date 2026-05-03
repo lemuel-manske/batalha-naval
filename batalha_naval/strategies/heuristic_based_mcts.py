@@ -24,7 +24,7 @@ def mcts_classic_strategy(
     state: GameState, player: Player, time_budget: float = 0.4
 ) -> Coord:
     """
-    Classic MCTS adapted for Battleship's partial observability via determinization, with a heuristic default policy.
+    Classic MCTS adapted for Battleship"s partial observability via determinization, with a heuristic default policy.
     """
 
     opp = opponent(player)
@@ -88,11 +88,11 @@ class _Node:
 
 
 def _ucb(node: _Node, c: float = 1.41) -> float:
-    '''
+    """
     The Upper Confidence Bound allows MCTS to balance:
     - Exploitation: favoring nodes with higher average reward (first term).
     - Exploration: favoring less-visited nodes to discover their potential (second term).
-    '''
+    """
 
     if node.n_visits == 0:
         return float("inf")
@@ -105,9 +105,9 @@ def _ucb(node: _Node, c: float = 1.41) -> float:
 
 
 def _select(node: _Node) -> _Node:
-    '''
+    """
     Selects the most promising node to explore, based on the UCB score, until it finds a leaf.
-    '''
+    """
 
     while not node.untried_actions and node.children:
         node = max(node.children, key=_ucb)
@@ -116,9 +116,9 @@ def _select(node: _Node) -> _Node:
 
 
 def _expand(node: _Node) -> _Node:
-    '''
+    """
     Expands the node by creating a new child for one of its untried actions (randomly selected).
-    '''
+    """
 
     actions_size = len(node.untried_actions)
     random_action = random.randrange(actions_size)
@@ -132,9 +132,9 @@ def _expand(node: _Node) -> _Node:
 
 
 def _simulate(det_state: GameState, node: _Node, player: Player) -> float:
-    '''
+    """
     Simulates a game, and return a reward based on the outcome: winner > loser.
-    '''
+    """
 
     from batalha_naval.loop import run_game
 
@@ -167,12 +167,12 @@ def _simulate(det_state: GameState, node: _Node, player: Player) -> float:
 
     state_after_action, _ = attack(det_state, player, coord)
 
-    # opponent plays randomly during rollouts, as the heuristic is focused on the main player chances of winning,
-    # not on simulating a strong opponent # opponent plays randomly during rollouts,
-    # as the heuristic is focused on the main player chances of winning, not on simulating a strong opponent
+    # opponent plays randomly during rollouts,
+    # as the heuristic is focused on the main player chances of winning,
+    # not on simulating a strong opponent
     strategies: Strategies = {
         player: _heuristic_strategy,
-        opp: random_strategy, 
+        opp: random_strategy,
     }
 
     final = run_game(state_after_action, strategies)
@@ -186,9 +186,9 @@ def _simulate(det_state: GameState, node: _Node, player: Player) -> float:
 
 
 def _backpropagate(node: _Node | None, reward: float) -> None:
-    '''
+    """
     Updates the node and its ancestors with the simulation result.
-    '''
+    """
 
     while node is not None:
         node.n_visits += 1
@@ -197,9 +197,9 @@ def _backpropagate(node: _Node | None, reward: float) -> None:
 
 
 def _get_hot_cells(state: GameState, player: Player) -> list[Coord]:
-    '''
+    """
     Cells that have been attacked and are hits on living ships, hence "hot" for targeting.
-    '''
+    """
 
     opp = opponent(player)
 
@@ -212,10 +212,10 @@ def _get_hot_cells(state: GameState, player: Player) -> list[Coord]:
 
 
 def _contiguous_runs(coords: list[Coord], axis: int) -> list[list[Coord]]:
-    '''
+    """
     Given a list of coordinates and an axis (0 for rows, 1 for columns),
     returns a list of contiguous runs of coordinates along that axis.
-    '''
+    """
 
     sorted_cells = sorted(coords, key=lambda x: x[axis])
 
@@ -238,9 +238,9 @@ def _target_candidates(
     hot_cells: list[Coord],
     attacked: frozenset[Coord],
 ) -> list[Coord]:
-    '''
+    """
     Candidate cells to attack when there are known hits on living ships.
-    '''
+    """
 
     if not hot_cells:
         return []
@@ -310,13 +310,13 @@ def _target_candidates(
 
 
 def _parity_candidates(state: GameState, player: Player) -> list[Coord]:
-    '''
+    """
     Candidate cells to attack based on parity, considering the size of the smallest living ship.
 
-    Ignores known hits, as it's meant to be a fallback when there are no "hot" cells.
+    Ignores known hits, as it"s meant to be a fallback when there are no "hot" cells.
 
     For example: in the first turn, the candidates will be *all* cells (as no attacks have been made).
-    '''
+    """
 
     opp = opponent(player)
 
