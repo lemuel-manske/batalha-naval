@@ -1,6 +1,11 @@
 export const uiState = {
   phase: "loading",
   mode: "hvai",
+  strategy: {
+    hvai:     "smart",
+    p1_aivai: "smart",
+    p2_aivai: "smart",
+  },
   players: {
     player1: {
       pendingShips: [],

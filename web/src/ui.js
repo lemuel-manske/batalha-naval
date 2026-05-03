@@ -19,6 +19,11 @@ export const elBtnAivai = $("btn-aivai");
 export const elLabelPlayer = $("label-player");
 export const elLabelEnemy = $("label-enemy");
 
+export const elSelectStrategyHvai = $("select-strategy-hvai");
+export const elSelectStrategyP1   = $("select-strategy-p1");
+export const elSelectStrategyP2   = $("select-strategy-p2");
+export const elStrategyHvai       = $("strategy-hvai");
+
 export function show(el) {
   el.classList.remove("hidden");
 }
@@ -53,6 +58,9 @@ export function setPhase(phase) {
   const inGame = phase === "game" || phase === "end";
   elBtnHvai.disabled = inGame;
   elBtnAivai.disabled = inGame;
+  elSelectStrategyHvai.disabled = inGame
+  elSelectStrategyP1.disabled   = inGame
+  elSelectStrategyP2.disabled   = inGame
 
   hide(elBtnStart);
   hide(elBtnCancel);
@@ -112,7 +120,8 @@ export function setMode(mode) {
   elBtnAivai.classList.toggle("active", mode === "aivai");
   const cfg = MODE_CONFIG[mode];
   elLabelPlayer.textContent = cfg.labelPlayer;
-  elLabelEnemy.textContent = cfg.labelEnemy;
+  elLabelEnemy.textContent  = cfg.labelEnemy;
+  elStrategyHvai.classList.toggle("hidden", mode !== "hvai");
 }
 
 export function endGame(winner) {

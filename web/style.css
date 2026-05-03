@@ -74,6 +74,38 @@ h1 {
   justify-content: center;
 }
 
+#strategy-controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.strategy-group {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.strategy-group label {
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.strategy-group select {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid var(--color-primary-mid);
+  background: var(--color-bg);
+  color: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.strategy-group select:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 #mode-toggle {
   display: flex;
   background: #dce8f8;

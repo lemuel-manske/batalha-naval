@@ -28,8 +28,17 @@ sys.path.insert(0, "/")
   pyodide.runPython(`
 from batalha_naval.board import empty_board, random_placement, SHIPS, can_place_ship, place_ship, BOARD_SIZE
 from batalha_naval.game import new_game, attack as _attack, is_game_over, get_winner
-from batalha_naval.strategy import smart_strategy
+from batalha_naval.strategy import random_strategy, smart_strategy, mcts_strategy
 import json as _json
+
+_STRATEGIES = {
+    "random": random_strategy,
+    "smart":  smart_strategy,
+    "mcts":   mcts_strategy,
+}
+
+_strategy1 = smart_strategy
+_strategy2 = smart_strategy
 `)
 
   pyodide.runPython(`
@@ -63,7 +72,7 @@ self.onmessage = async function(e) {
     else if (msg.type === CMD_PLACE_SHIP) handlePlaceShip(msg)
     else if (msg.type === CMD_RANDOM_PLACEMENT) handleRandomPlacement(msg.player)
     else if (msg.type === CMD_CLEAR_PLACEMENT) handleClearPlacement(msg.player)
-    else if (msg.type === CMD_START_GAME) handleStartGame(msg.mode)
+    else if (msg.type === CMD_START_GAME) handleStartGame(msg.mode, msg.strategy)
     else if (msg.type === CMD_ATTACK) handleAttack(msg.coord)
     else if (msg.type === CMD_AI_TURN) handleAiTurn()
   } catch (err) {
@@ -153,12 +162,23 @@ _json.dumps({"placed": _placed_names, "pending": _pending_names, "board": _board
   })
 }
 
-function handleStartGame(mode) {
+function handleStartGame(mode, strategy) {
+  const s = strategy || {}
+
   if (mode === "aivai") {
-    pyodide.runPython(`_state = new_game(_placement_board, _placement_board2)`)
+    const s1 = s.p1_aivai || "smart"
+    const s2 = s.p2_aivai || "smart"
+    pyodide.runPython(`
+_strategy1 = _STRATEGIES["${s1}"]
+_strategy2 = _STRATEGIES["${s2}"]
+_state = new_game(_placement_board, _placement_board2)
+`)
     self.postMessage({ type: EVT_STATE, state: JSON.parse(serializeState()), mode: "aivai" })
   } else {
+    const s1 = s.hvai || "smart"
     pyodide.runPython(`
+_strategy1 = _STRATEGIES["${s1}"]
+_strategy2 = _STRATEGIES["${s1}"]
 _board2 = random_placement()
 _state = new_game(_placement_board, _board2)
 `)
@@ -179,8 +199,10 @@ function handleAiTurn() {
   const alreadyOver = pyodide.runPython(`is_game_over(_state)`)
   if (alreadyOver) return
   pyodide.runPython(`
-_coord = smart_strategy(_state, _state["current_turn"])
-_state, _result = _attack(_state, _state["current_turn"], _coord)
+_current = _state["current_turn"]
+_strat = _strategy1 if _current == "player1" else _strategy2
+_coord = _strat(_state, _current)
+_state, _result = _attack(_state, _current, _coord)
 if is_game_over(_state):
     _state = {**_state, "winner": get_winner(_state)}
 `)

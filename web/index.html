@@ -20,6 +20,17 @@
           <button id="btn-aivai" class="toggle-btn">IA vs IA</button>
         </div>
 
+        <div id="strategy-controls">
+          <div id="strategy-hvai" class="strategy-group">
+            <label for="select-strategy-hvai">Estratégia da IA</label>
+            <select id="select-strategy-hvai">
+              <option value="smart">Inteligente</option>
+              <option value="random">Aleatória</option>
+              <option value="mcts">MCTS</option>
+            </select>
+          </div>
+        </div>
+
         <div id="action-btns">
           <button id="btn-start" disabled>Iniciar jogo</button>
           <button id="btn-cancel" class="hidden secondary">
@@ -57,6 +68,14 @@
               Limpar
             </button>
           </div>
+          <div class="strategy-group">
+            <label for="select-strategy-p1">Estratégia IA 1</label>
+            <select id="select-strategy-p1">
+              <option value="smart">Inteligente</option>
+              <option value="random">Aleatória</option>
+              <option value="mcts">MCTS</option>
+            </select>
+          </div>
           <ul class="ship-list-side" id="ship-list-1"></ul>
         </div>
         <div class="placement-side" id="placement-side-2">
@@ -70,6 +89,14 @@
             <button class="btn-clear-side secondary" data-player="player2">
               Limpar
             </button>
+          </div>
+          <div class="strategy-group">
+            <label for="select-strategy-p2">Estratégia IA 2</label>
+            <select id="select-strategy-p2">
+              <option value="smart">Inteligente</option>
+              <option value="random">Aleatória</option>
+              <option value="mcts">MCTS</option>
+            </select>
           </div>
           <ul class="ship-list-side" id="ship-list-2"></ul>
         </div>

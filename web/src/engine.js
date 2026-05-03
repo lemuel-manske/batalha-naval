@@ -32,7 +32,7 @@ export function createEngine(
     randomPlacement(player) { worker.postMessage({ type: CMD_RANDOM_PLACEMENT, player }) },
     clearPlacement(player) { worker.postMessage({ type: CMD_CLEAR_PLACEMENT, player }) },
 
-    startGame(mode) { worker.postMessage({ type: CMD_START_GAME, mode }) },
+    startGame(mode, strategy) { worker.postMessage({ type: CMD_START_GAME, mode, strategy }) },
     attack(coord) { worker.postMessage({ type: CMD_ATTACK, coord }) },
     aiTurn() { worker.postMessage({ type: CMD_AI_TURN }) },
   }
