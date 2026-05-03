@@ -20,10 +20,9 @@ poetry install
 |---|---|
 | `make test-py` | Run Python tests |
 | `make test-js` | Run JS tests |
+| `make test-e2e` | Run Playwright tests |
 | `make test` | Run both |
 | `make fmt` | Format code with Black |
-| `make lint` | Check formatting |
-| `make typecheck` | Run mypy |
 | `make build-web` | Sync Python package into `web/` |
 | `make serve` | Serve the frontend at `localhost:8000` |
 

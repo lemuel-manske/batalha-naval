@@ -7,7 +7,7 @@ test-js:
 test-e2e: build-web
 	npm run test:e2e --prefix web
 
-test: test-py test-js
+test: test-py test-js test-e2e
 
 fmt:
 	poetry run black .
