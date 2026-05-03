@@ -1,6 +1,6 @@
 from batalha_naval.board import random_placement, BOARD_SIZE
 from batalha_naval.game import new_game
-from batalha_naval.strategy import random_strategy
+from batalha_naval.strategies import random_strategy
 
 
 def test_random_strategy_returns_valid_coord():

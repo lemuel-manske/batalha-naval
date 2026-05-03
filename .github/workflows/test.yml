@@ -36,3 +36,30 @@ jobs:
 
       - name: Run JS tests
         run: make test-js
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: web/.nvmrc
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: web
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+        working-directory: web
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Build web
+        run: make build-web
+
+      - name: Run E2E tests
+        run: make test-e2e

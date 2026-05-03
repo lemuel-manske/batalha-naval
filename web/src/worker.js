@@ -10,9 +10,15 @@ let pyodide = null
 async function initPyodide() {
   pyodide = await loadPyodide()
 
-  const modules = ["__init__", "board", "utils", "game", "strategy", "loop"]
+  const modules = [
+    "__init__", "board", "utils", "game", "loop",
+    "strategies/__init__", "strategies/types", "strategies/random",
+    "strategies/randomic_based_mcts", "strategies/classic_mcts",
+    "strategies/heuristic_based_mcts",
+  ]
 
   pyodide.FS.mkdirTree("/batalha_naval")
+  pyodide.FS.mkdirTree("/batalha_naval/strategies")
   for (const mod of modules) {
     const url = new URL(`../batalha_naval/${mod}.py`, self.location.href).href
     const resp = await fetch(url)
@@ -28,17 +34,17 @@ sys.path.insert(0, "/")
   pyodide.runPython(`
 from batalha_naval.board import empty_board, random_placement, SHIPS, can_place_ship, place_ship, BOARD_SIZE
 from batalha_naval.game import new_game, attack as _attack, is_game_over, get_winner
-from batalha_naval.strategy import random_strategy, smart_strategy, mcts_strategy
+from batalha_naval.strategies import random_strategy, mcts_classic_strategy, mcts_random_strategy
 import json as _json
 
 _STRATEGIES = {
     "random": random_strategy,
-    "smart":  smart_strategy,
-    "mcts":   mcts_strategy,
+    "smart":  mcts_classic_strategy,
+    "mcts":   mcts_random_strategy,
 }
 
-_strategy1 = smart_strategy
-_strategy2 = smart_strategy
+_strategy1 = mcts_classic_strategy
+_strategy2 = mcts_classic_strategy
 `)
 
   pyodide.runPython(`

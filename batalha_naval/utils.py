@@ -10,9 +10,9 @@ type ShipMap = dict[ShipName, ShipCells]
 
 
 def extract_ships(board: Board) -> ShipMap:
-    '''
+    """
     Extracts the ships and their corresponding cells from the given board.
-    '''
+    """
 
     ships: dict[ShipName, set[Coord]] = {}
 

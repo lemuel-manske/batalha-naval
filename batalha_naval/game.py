@@ -22,17 +22,17 @@ type AttackResult = Literal["miss", "hit", "sunk"]
 
 
 def opponent(player: Player) -> Player:
-    '''
+    """
     Returns the opponent player.
-    '''
+    """
 
     return "player2" if player == "player1" else "player1"
 
 
 def new_game(board1: Board, board2: Board) -> GameState:
-    '''
+    """
     Inits the game.
-    '''
+    """
 
     return {
         "boards": {
@@ -57,9 +57,9 @@ def attack(
     attacker: Player,
     coord: Coord,
 ) -> tuple[GameState, AttackResult]:
-    '''
+    """
     Executes an attack from the attacker player to the opponent at the given coordinate.
-    '''
+    """
 
     opp = opponent(attacker)
 
@@ -110,17 +110,17 @@ def attack(
 
 
 def is_game_over(state: GameState) -> bool:
-    '''
+    """
     Checks if the game is over.
-    '''
+    """
 
     return len(state["ships"]["player1"]) == 0 or len(state["ships"]["player2"]) == 0
 
 
 def get_winner(state: GameState) -> Player | None:
-    '''
+    """
     Returns the winner player if the game is over, otherwise returns `None`.
-    '''
+    """
 
     if len(state["ships"]["player2"]) == 0:
         return "player1"
@@ -136,9 +136,9 @@ def is_valid_attack(
     attacker: Player,
     coord: Coord,
 ) -> bool:
-    '''
+    """
     Validates if the attack from the attacker player to the opponent at the given coordinate is valid (i.e., within bounds and not previously attacked).
-    '''
+    """
 
     r, c = coord
 
@@ -149,13 +149,13 @@ def is_valid_attack(
 
 
 def sample_opponent_board(state: GameState, attacker: Player) -> Board:
-    '''
+    """
     Given the current game state and the attacker player, this function generates a random sample of the opponent's board.
 
     - Known misses are guaranteed to be empty
     - Sunk ships are placed in their exact positions
     - Known hits of still alive ships are guaranteed to be covered by the placed ship
-    '''
+    """
 
     opp = opponent(attacker)
     attacks = state["attacks"][attacker]
@@ -184,8 +184,23 @@ def sample_opponent_board(state: GameState, attacker: Player) -> Board:
         and opponent_board[coord[0]][coord[1]] not in sunk_ships
     )
 
-    for ship_name in state["ships"][opp]:
+    ship_hits_map: dict[str, frozenset[Coord]] = {
+        ship_name: frozenset(
+            coord
+            for coord in known_hits
+            if opponent_board[coord[0]][coord[1]] == ship_name
+        )
+        for ship_name in state["ships"][opp]
+    }
+
+    ordered_ships = sorted(
+        state["ships"][opp],
+        key=lambda name: (0 if ship_hits_map[name] else 1),
+    )
+
+    for ship_name in ordered_ships:
         placed = False
+        ship_hits = ship_hits_map[ship_name]
 
         while not placed:
             direction: Literal["h", "v"] = random.choice(["h", "v"])
@@ -204,12 +219,6 @@ def sample_opponent_board(state: GameState, attacker: Player) -> Board:
 
             if any(cell in known_misses for cell in cells):
                 continue
-
-            ship_hits = {
-                coord
-                for coord in known_hits
-                if opponent_board[coord[0]][coord[1]] == ship_name
-            }
 
             if ship_hits and not ship_hits.issubset(set(cells)):
                 continue

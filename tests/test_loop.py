@@ -1,7 +1,7 @@
 from batalha_naval.board import empty_board, place_ship, random_placement
 from batalha_naval.game import new_game, is_game_over, get_winner
-from batalha_naval.loop import play_turn, run_game, Strategies
-from batalha_naval.strategy import random_strategy
+from batalha_naval.loop import play_turn, run_game
+from batalha_naval.strategies import random_strategy, Strategies
 
 
 def _known_state():

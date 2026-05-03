@@ -5,4 +5,7 @@ __pycache__/
 .ruff_cache/
 .venv/
 
+**/test-results/
 **/node_modules/
+
+web/batalha_naval

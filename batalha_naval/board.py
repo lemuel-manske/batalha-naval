@@ -25,9 +25,9 @@ BOARD_SIZE = 10
 
 
 def empty_board() -> Board:
-    '''
+    """
     Checks if the board is empty, meaning all cells are `None`.
-    '''
+    """
 
     return tuple(tuple(None for _ in range(BOARD_SIZE)) for _ in range(BOARD_SIZE))
 
@@ -38,9 +38,9 @@ def can_place_ship(
     start: Coord,
     direction: Direction,
 ) -> bool:
-    '''
+    """
     Validates if a ship can be placed on the board at the given starting coordinate and direction.
-    '''
+    """
 
     size = SHIPS[ship_name]
     row, col = start
@@ -62,12 +62,14 @@ def place_ship(
     start: Coord,
     direction: Direction,
 ) -> Board:
-    '''
+    """
     Places a specified ship on the board at the given starting coordinate and direction, returning a new board with the ship placed.
-    '''
+    """
 
     if not can_place_ship(board, ship_name, start, direction):
-        raise ValueError(f"[place_ship] : invaliid {ship_name} in {start}, with direction {direction}")
+        raise ValueError(
+            f"[place_ship] : invaliid {ship_name} in {start}, with direction {direction}"
+        )
 
     size = SHIPS[ship_name]
     row, col = start
@@ -86,9 +88,9 @@ def place_ship(
 
 
 def random_placement() -> Board:
-    '''
+    """
     Generates a random board configuration by placing all ships in random positions and orientations, ensuring that they do not overlap and fit within the board boundaries.
-    '''
+    """
 
     board = empty_board()
 
