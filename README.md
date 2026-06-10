@@ -23,7 +23,6 @@ poetry install
 | `make test-e2e` | Run Playwright tests |
 | `make test` | Run both |
 | `make fmt` | Format code with Black |
-| `make build-web` | Sync Python package into `web/` |
 | `make serve` | Serve the frontend at `localhost:8000` |
 
 ## Architecture

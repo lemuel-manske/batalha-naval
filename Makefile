@@ -1,3 +1,14 @@
+SHELL := /bin/bash
+
+install:
+	poetry install && \
+	cd web && \
+	source ~/.nvm/nvm.sh && \
+	nvm install && \
+	nvm use && \
+	npm ci
+
+
 test-py:
 	poetry run pytest -v
 
@@ -9,12 +20,15 @@ test-e2e: build-web
 
 test: test-py test-js test-e2e
 
+
 fmt:
 	poetry run black .
 
+
 build-web:
-	rm -rf web/batalha_naval
+	rm -rf web/batalha_naval && \
 	cp -r batalha_naval web/batalha_naval
 
-serve:
-	cd web && python3 -m http.server 8000
+serve: build-web
+	cd web && \
+	python3 -m http.server 8000
